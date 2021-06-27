@@ -1,0 +1,84 @@
+---
+title: 'Course Project: Shiny Application and Reproducible Pitch'
+author: "Ramon De LHotellerie"
+date: "6/23/2021"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+Folder: https://github.com/Rdelhote/ShinyApplicationReproduciblePitch
+---
+
+## Instructions
+
+This peer assessed assignment has two parts. First, you will create a Shiny application and deploy it on Rstudio's servers. Second, you will use Slidify or Rstudio Presenter to prepare a reproducible pitch presentation about your application.
+
+**Your Shiny Application**
+
+1. Write a shiny application with associated supporting documentation. The documentation should be thought of as whatever a user will need to get started using your application.
+2. Deploy the application on Rstudio's shiny server
+3. Share the application link by pasting it into the provided text box
+4. Share your server.R and ui.R code on github
+
+The application must include the following:
+
+1. Some form of input (widget: textbox, radio button, checkbox, ...)
+2. Some operation on the ui input in sever.R
+3. Some reactive output displayed as a result of server calculations
+4. You must also include enough documentation so that a novice user could use your application.
+5. The documentation should be at the Shiny website itself. Do not post to an external link.
+
+The Shiny application in question is entirely up to you. However, if you're having trouble coming up with ideas, you could start from the simple prediction algorithm done in class and build a new algorithm on one of the R datasets packages. Please make the package simple for the end user, so that they don't need a lot of your prerequisite knowledge to evaluate your application. You should emphasize a simple project given the short time frame.
+
+## Shiny Application (mtcars)
+
+mtcars dataset is the data that has been used for this document, which is one of the R available packages.
+The App research the data of mtcars dataset in RStudio.
+
+1. There are eleven available variables.
+2. You can select the two variables that you want to confront.
+3. A plot will appear confronting both variables.
+
+## Shiny Application
+
+The presentation can be found via the following Github repository: https://github.com/Rdelhote/ShinyApplicationReproduciblePitch
+
+### R code
+```{r setup, include = TRUE, echo = TRUE, cache = TRUE}
+library(shiny)
+
+shinyServer(function(input, output) {
+    
+output$carsPlot <- renderPlot({
+        
+        x <- mtcars[, as.numeric(input$x)]
+        y <- mtcars[, as.numeric(input$y)]
+        xlab = colnames(mtcars)[as.numeric(input$x)]
+        ylab = colnames(mtcars)[as.numeric(input$y)]
+        plot(x, y, xlab = xlab, ylab = ylab, main = "Car features comparison")
+        
+    })
+})
+```
+
+***
+
+## Plot
+```{r, echo = FALSE, cache = TRUE}
+library(shiny)
+
+ui <- basicPage(
+  plotOutput("plot1", click = "plot_click"),
+  verbatimTextOutput("info")
+)
+
+server <- function(input, output) {
+  output$plot1 <- renderPlot({
+    plot(mtcars$wt, mtcars$mpg)
+  })
+
+  output$info <- renderText({
+    paste0("x=", input$plot_click$x, "\ny=", input$plot_click$y)
+  })
+}
+plot(mtcars$wt, mtcars$mpg)
+```
